@@ -259,7 +259,13 @@
   var SONG_FILE = "cancion.mp3"; /* sube un mp3 con este nombre junto al index.html; si no existe, suena la cajita musical */
   var SONG_URL = ""; /* pega aquí el link de Spotify o YouTube de la canción */
   var NO_TEXTS = ["¿Segura?", "Piénsalo bien…", "Déjame pensarlo"];
+  var NTFY_TOPIC = "detalle-k7q2x9vd4mzp8w3h"; /* canal de ntfy.sh donde llega el aviso de su respuesta */
   /* ================================================ */
+
+  function notify(msg) {
+    if (!NTFY_TOPIC) return;
+    try { fetch("https://ntfy.sh/" + NTFY_TOPIC, { method: "POST", body: msg, keepalive: true }).catch(function () {}); } catch (e) {}
+  }
 
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var $ = function (id) { return document.getElementById(id); };
@@ -551,6 +557,7 @@
     finished = true;
     $("ask").hidden = true;
     $("later").hidden = false;
+    notify("🤍 Eligió \"Déjame pensarlo\". Paciencia.");
   });
 
   $("yes").addEventListener("click", function (e) {
@@ -559,6 +566,7 @@
     $("ask").hidden = true;
     $("count").textContent = HN;
     $("done").hidden = false;
+    notify("💛 ¡Dijo que SÍ!");
     var n = 0;
     (function fire() {
       burst(W * (0.2 + Math.random() * 0.6), H * (0.2 + Math.random() * 0.45), 46, 3.4);
